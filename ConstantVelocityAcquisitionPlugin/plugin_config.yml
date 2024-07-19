@@ -1,9 +1,9 @@
-name: Plugin Name
-view: Popup # Tab or Popup if has an GUI
+name: Constant Velocity Acquisition
+view: Tab # Tab or Popup if has an GUI
 
 acquisition_modes: 
-  - name: Plugin Acquisition
-    file_name: plugin_acquisition_mode.py
+  - name: Constant Velocity
+    file_name: constant_velocity_acquisition.py
 
 ###################################################################
 # how to add plugin device in the .navigate/configuration.yaml file

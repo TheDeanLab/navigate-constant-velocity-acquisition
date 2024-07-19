@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 
 
-class PluginNameFrame(ttk.Frame):
+class ConstantVelocityAcquisitionFrame(ttk.Frame):
     """Plugin Frame: Just an example
 
     This frame contains the widgets for the plugin.
@@ -37,14 +37,14 @@ class PluginNameFrame(ttk.Frame):
         # ######## Example Widgets ########
         # ##### add your widgets here #####
         # #################################
-        label = ttk.Label(self, text="Plugin Name:")
+        label = ttk.Label(self, text="Stage Axis:")
         label.grid(row=0, column=0, sticky=tk.NW)
 
-        self.variables["plugin_name"] = tk.StringVar(self)
-        self.inputs["plugin_name"] = ttk.Entry(
-            self, textvariable=self.variables["plugin_name"]
-        )
-        self.inputs["plugin_name"].grid(
+        self.variables["axis"] = tk.StringVar(self)
+        self.inputs["axis"] = ttk.Combobox(self, textvariable=self.variables["axis"])
+        self.inputs["axis"]["values"] = ("X", "Y", "Z", "F", "Theta")
+        self.inputs["axis"].state(["readonly"])
+        self.inputs["axis"].grid(
             row=0, column=1, sticky="N", padx=5, pady=(0, 5)
         )
 
