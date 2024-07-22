@@ -1,41 +1,32 @@
 <h1 align="center">
 <img src="https://github.com/TheDeanLab/navigate-plugin-template/blob/main/plugin-icon.jpg" width="200" height="200"/>
 
-navigate-plugin-template
+navigate-constant-velocity-acquisition
 	
 <h2 align="center">
-	A Template for Creating Plugins for navigate
+	A navigate plugin for constant velocity imaging.
 </h2>
 </h1>
 
-The **navigate-plugin-template** is a starter kit for developers looking to create plugins for the **navigate** light-sheet microscope control software. This template provides a basic structure and guidelines to help you develop and integrate new plugins into **navigate**. 
+### Background
 
-More information on how to develop your own plugins can be found [here](https://thedeanlab.github.io/navigate/advanced.html).
+When acquiring large z-stacks, the time it takes to move the stage between slices can 
+be a significant bottleneck. Often, stage movement is initiated with a serial command,
+the stages accelerates, moves, and decelerates before sending a return serial 
+command to notify the software that the stage has reached the desired position. 
+Altogether, this can add a significant amount of time to each image acquisition, 
+which accumulates over the course of a large z-stack.
 
-### Getting Started
+### Approach
 
-1. **Fork this Repository**: Click the 'Fork' button at the top of this page to create your own copy of this template.
-2. **Clone your Fork**: Clone your forked repository to your local machine.
-3. **Create a New Branch**: It's a good practice to create a new branch for your plugin development.
-4. **Develop Your Plugin**: Use the template structure to develop your plugin. Make sure to follow the guidelines provided in the `CONTRIBUTING.md` file.
-5. **Test Your Plugin**: Ensure your plugin works as expected with Navigate.
+The **navigate-constant-velocity-acquisition** is a plugin for **navigate** which 
+improves the image acquisition rate for large z-stacks by using a constant velocity
+approach.  The plugin is designed to operate with Applied Scientific Instrumentation 
+scan-optimized stages which maintain a constant velocity during long-range movements.
+The [SCAN](https://asiimaging.com/docs/scan_module?s[]=sync) module is necessary.
 
-### Template Structure
-Both navigate, and the navigate-plugin-template, are organized in an industry-standard Model-View-Controller architecture. 
-
-- `model/devices/`: Device communication protocols for your plugin. Enables you to add new devices and extend the functionality of **navigate**.
-- `model/features/`: A feature template for your plugin. Enables you to use it as part of `smart` imaging workflows.
-- `view/`: Graphical user interface for your plugin. 
-- `controller/`: Sub-controller for your plugin, which coordinates actions placed in the graphical user interface with device control. 
-
-### Contributing
-
-After developing your plugin, you can contribute it back to the Navigate community. Please see our contribution guidelines for more information.
-
-### Support
-
-For support or questions about using this template, please open an issue in the GitHub repository.
-
-### License
-
-This template is open source and available under the same license as Navigate.
+The plugin will move the stages to a position before the start of the z-stack and 
+trigger constant velocity movement. When the stage reaches the desired start 
+position and is operating at the correct velocity, the stage triggers the operation 
+of the software. The software then acquires images at the desired z-slice intervals
+according to the stage velocity, camera integration and readout time, etc.
