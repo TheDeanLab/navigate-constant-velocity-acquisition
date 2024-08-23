@@ -104,7 +104,6 @@ class ConstantVelocityAcquisition:
         print("**** CVA TTL STARTED pre signal func initiated****")
         self.asi_stage = self.model.active_microscope.stages[self.axis]
         microscope_state = self.model.configuration["experiment"]["MicroscopeState"]
-        self.stack_cycling_mode = microscope_state["stack_cycling_mode"]
         
         self.channels = microscope_state["selected_channels"]
         self.current_channel_in_list = 0
@@ -156,13 +155,13 @@ class ConstantVelocityAcquisition:
         # desired_sampling = 160  # nm
         desired_sampling = (
             float(
-                self.model.configuration["experiment"]["MicroscopeState"]["step_size"]
+                self.model.configuration["experiment"]["ConstantVelocity"]["step_size"]
             )
             * 1000.0
         )
 
         desired_sampling_um = float(
-            self.model.configuration["experiment"]["MicroscopeState"]["step_size"]
+            self.model.configuration["experiment"]["ConstantVelocity"]["step_size"]
         )
 
         print("*** step size um:", desired_sampling_um)
@@ -191,18 +190,15 @@ class ConstantVelocityAcquisition:
         # microns to mm
         self.start_position = (
             float(
-                self.model.configuration["experiment"]["MicroscopeState"]["abs_z_start"]
+                self.model.configuration["experiment"]["ConstantVelocity"]["start_position"]
             )
             / 1000.0
         )
         self.stop_position = (
             float(
-                self.model.configuration["experiment"]["MicroscopeState"]["abs_z_end"]
+                self.model.configuration["experiment"]["ConstantVelocity"]["end_position"]
             )
             / 1000.0
-        )
-        self.number_z_steps = float(
-            self.model.configuration["experiment"]["MicroscopeState"]["number_z_steps"]
         )
 
         self.start_position_um = self.start_position * 1000
@@ -210,7 +206,6 @@ class ConstantVelocityAcquisition:
 
         logger.info(f"*** z start position: {self.start_position}")
         logger.info(f"*** z end position: {self.stop_position}")
-        logger.info(f"*** Expected number of steps: {self.number_z_steps}")
         pos = self.asi_stage.get_axis_position(self.axis)
         print(f"Current Position = {pos}")
         print(f"Start position = {self.start_position*1000}")
@@ -293,6 +288,8 @@ class ConstantVelocityAcquisition:
             self.model.configuration["waveform_templates"]["CVACONPRO"]["expand"]
         )
         self.expected_frames = expected_frames
+        self.total_frames = self.expected_frames * self.channels
+        self.model.event_queue.put(("ConstantVelocity-UpdateFrameNumber", expected_frames))
         # np.ceil(expected_frames/(self.repeat_waveform*self.expand_waveform))
         print(f"Expand Frames = {expand_frames}")
         print(f"Self Expected Frames test = {self.expected_frames}")
@@ -352,20 +349,16 @@ class ConstantVelocityAcquisition:
             or self.end_signal_temp > 0
         ):
             print("returning true from stop or end acquisition end_func_signal")
-            if self.stack_cycling_mode == "per_stack":
-                print("per stack if statment called")
-                print(f"channel list: {self.current_channel_in_list}")
-                self.update_channel()
-                print("if statement update channel finished")
-                # if run through all the channels, move to next position
-                if self.current_channel_in_list == 0:
-                    print(
-                        f"in if channel list = 0 statement, channel = "
-                        f"{self.current_channel_in_list}"
-                    )
-                    return True
-            else:
-                print("in else true statement")
+            print("per stack if statment called")
+            print(f"channel list: {self.current_channel_in_list}")
+            self.update_channel()
+            print("if statement update channel finished")
+            # if run through all the channels, move to next position
+            if self.current_channel_in_list == 0:
+                print(
+                    f"in if channel list = 0 statement, channel = "
+                    f"{self.current_channel_in_list}"
+                )
                 return True
 
         print("returning False from end_func_signal")
@@ -471,7 +464,7 @@ class ConstantVelocityAcquisition:
 
     def pre_data_func(self):
         self.received_frames_v2 = self.received_frames
-        self.total_frames = self.expected_frames * self.channels
+        # self.total_frames = self.expected_frames * self.channels
         print(f"total channels = {self.channels}")
         print(f"total frames = {self.total_frames}")
 

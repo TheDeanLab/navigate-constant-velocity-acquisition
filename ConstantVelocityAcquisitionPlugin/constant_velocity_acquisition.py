@@ -51,9 +51,9 @@ class ConstantVelocityAcquisitionMode:
         """
         controller.configuration["experiment"]["MicroscopeState"][
             "waveform_template"
-        ] = "Confocal-Projection"
+        ] = "Constant-Velocity"
         # only supports per stack
-        self.configuration["experiment"]["MicroscopeState"][
+        controller.configuration["experiment"]["MicroscopeState"][
             "stack_cycling_mode"
         ] = "per_stack"
 
@@ -79,8 +79,8 @@ class ConstantVelocityAcquisitionMode:
         """
         # TODO: number of steps
         return {
-            "z": model.configuration["experiment"]["MicroscopeState"][
-                "n_plane"
+            "z": model.configuration["experiment"]["ConstantVelocity"][
+                "number_of_frames"
             ]
         }
     
@@ -92,4 +92,5 @@ class ConstantVelocityAcquisitionMode:
         model : object
             navigate model
         """
-        self.acquisition_mode.stages[""].stop()
+        axis = model.configuration["experiment"]["ConstantVelocity"]["axis"]
+        model.active_microscope.stages[axis].stop()
