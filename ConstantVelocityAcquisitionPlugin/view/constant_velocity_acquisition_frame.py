@@ -2,6 +2,9 @@
 import tkinter as tk
 from tkinter import ttk
 
+from navigate.view.custom_widgets.validation import ValidatedSpinbox
+from navigate.view.custom_widgets.LabelInputWidgetFactory import LabelInput
+
 
 class ConstantVelocityAcquisitionFrame(ttk.Frame):
     """Plugin Frame: Just an example
@@ -33,23 +36,45 @@ class ConstantVelocityAcquisitionFrame(ttk.Frame):
         self.buttons = {}
         self.variables = {}
 
-        # #################################
-        # ######## Example Widgets ########
-        # ##### add your widgets here #####
-        # #################################
-        label = ttk.Label(self, text="Stage Axis:")
-        label.grid(row=0, column=0, sticky=tk.NW)
+        label = ttk.Label(self, text="Stage Axis :")
+        label.grid(row=0, column=0, sticky=tk.NW, padx=(20, 5), pady=10)
 
-        self.variables["axis"] = tk.StringVar(self)
+        self.variables["axis"] = tk.StringVar()
         self.inputs["axis"] = ttk.Combobox(self, textvariable=self.variables["axis"])
         self.inputs["axis"]["values"] = ("X", "Y", "Z", "F", "Theta")
         self.inputs["axis"].state(["readonly"])
-        self.inputs["axis"].grid(
-            row=0, column=1, sticky="N", padx=5, pady=(0, 5)
-        )
+        self.inputs["axis"].grid(row=0, column=1, sticky="N", padx=5, pady=10)
 
-        self.buttons["move"] = ttk.Button(self, text="MOVE")
-        self.buttons["move"].grid(row=1, column=1, sticky="N", padx=6)
+        labels = ["Start Position", "End Position", "Step Size", "Number of Frames"]
+        input_names = [
+            "start_position",
+            "end_position",
+            "step_size",
+            "number_of_frames",
+        ]
+        for i in range(len(labels)):
+            label = ttk.Label(self, text=labels[i] + " :")
+            label.grid(row=i + 1, column=0, padx=(20, 5), pady=10, sticky=tk.NW)
+
+            self.variables[input_names[i]] = tk.StringVar()
+            self.inputs[input_names[i]] = ValidatedSpinbox(
+                self, textvariable=self.variables[input_names[i]]
+            )
+            self.inputs[input_names[i]].grid(
+                row=i + 1, column=1, sticky="N", padx=5, pady=10
+            )
+            self.inputs[input_names[i]].config(from_=-1000, to=1000, increment=1)
+        self.inputs["step_size"].config(from_=0, to=1000, increment=0.1)
+        self.inputs["number_of_frames"]["state"] = "disabled"
+
+        self.buttons["start_position"] = ttk.Button(
+            self, text="Set Position", padding=(10, 0)
+        )
+        self.buttons["end_position"] = ttk.Button(
+            self, text="Set Position", padding=(10, 0)
+        )
+        self.buttons["start_position"].grid(row=1, column=2, padx=(5, 20))
+        self.buttons["end_position"].grid(row=2, column=2, padx=(5, 20))
 
     # Getters
     def get_variables(self):
