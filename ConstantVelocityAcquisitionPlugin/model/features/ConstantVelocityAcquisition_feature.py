@@ -37,12 +37,6 @@ import logging
 import numpy as np
 from navigate.model.features.image_writer import ImageWriter
 
-# from navigate.model import data_sources
-# from navigate.model.data_sources import data_source
-# # from navigate.model.data_sources import D
-# import os
-
-
 p = __name__.split(".")[1]
 logger = logging.getLogger(p)
 
@@ -172,7 +166,6 @@ class ConstantVelocityAcquisition:
         # Set the start and end position of the scan in millimeters.
         # Retrieved from the GUI.
         # Set Stage Limits - Units in millimeters
-        # microns to mm
         self.start_position = (
             float(
                 self.model.configuration["experiment"]["MicroscopeState"]["abs_z_start"]
