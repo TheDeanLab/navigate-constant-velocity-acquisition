@@ -92,5 +92,5 @@ class ConstantVelocityAcquisitionMode:
         model : object
             navigate model
         """
-        axis = model.configuration["experiment"]["ConstantVelocity"]["axis"]
+        axis = model.configuration["experiment"]["ConstantVelocity"]["axis"].lower()
         model.active_microscope.stages[axis].stop()
