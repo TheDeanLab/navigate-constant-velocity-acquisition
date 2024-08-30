@@ -77,7 +77,6 @@ class ConstantVelocityAcquisitionMode:
         model : object
             navigate model
         """
-        # TODO: number of steps
         return {
             "z": model.configuration["experiment"]["ConstantVelocity"][
                 "number_of_frames"
