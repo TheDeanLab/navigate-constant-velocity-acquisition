@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "navigate-constant-velocity"
 version = "0.0.1"
-description = "Open source, smart, light-sheet microscopy control software plugin template."
+description = "A navigate plugin for imaging in a constant velocity format."
 authors = [{name = "The Dean Lab, UT Southwestern Medical Center"}]
 readme = "README.md"
 license = {file = "LICENSE"}

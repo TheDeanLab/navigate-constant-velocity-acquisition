@@ -4,7 +4,7 @@
 navigate-constant-velocity-acquisition
 	
 <h2 align="center">
-	A navigate plugin for constant velocity imaging.
+	A navigate plugin for imaging in a constant velocity format.
 </h2>
 </h1>
 
