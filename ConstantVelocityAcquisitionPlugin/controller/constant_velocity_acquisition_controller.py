@@ -44,7 +44,26 @@ class ConstantVelocityAcquisitionController:
                     widget_name
                 ] = value
             except (TypeError, ValueError):
-                pass
+                return
+
+            start_position = self.parent_controller.configuration["experiment"][
+                "ConstantVelocity"
+            ]["start_position"]
+            end_position = self.parent_controller.configuration["experiment"][
+                "ConstantVelocity"
+            ]["end_position"]
+            step_size = self.parent_controller.configuration["experiment"][
+                "ConstantVelocity"
+            ]["step_size"]
+            # calculate the estimated number of frames
+            try:
+                frame_number = abs(end_position - start_position) // step_size
+            except:
+                frame_number = 1
+            self.variables["number_of_frames"].set(frame_number)
+            self.parent_controller.configuration["experiment"]["ConstantVelocity"][
+                "number_of_frames"
+            ] = int(frame_number)
 
         return func
 
@@ -59,7 +78,6 @@ class ConstantVelocityAcquisitionController:
         return func
 
     def update_axis(self, *args):
-        print("*** update axis!")
         self.parent_controller.configuration["experiment"]["ConstantVelocity"][
             "axis"
         ] = self.variables["axis"].get()
